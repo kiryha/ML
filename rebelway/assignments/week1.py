@@ -2,7 +2,7 @@
 
 # Question 1:
 
-# Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+# Given an array of integers and an integer target, return indices of the two numbers such that they add up to target.
 # You may assume that each input would have exactly one solution, and you may not use the same element twice.
 # Example: [2,3,4,2,7] target = 10, output = [1,4]
 
