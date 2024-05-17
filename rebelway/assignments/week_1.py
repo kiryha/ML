@@ -1,4 +1,6 @@
+# Week 1 Assignment: Python solutions
 # Reverse linked list. Time and space complexity: O(n), O(1)
+
 class Node:
     def __init__(self, data, next=None):
         self.data = data

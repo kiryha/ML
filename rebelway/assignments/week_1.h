@@ -1,3 +1,4 @@
+// Week 1 Assignment: VEX solutions
 // Two Sum. Time Complexity = O(n), Space Complexity = O(n)
 int numbers[] = {2,3,4,2,7};
 int target = 10;
