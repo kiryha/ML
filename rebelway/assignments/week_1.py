@@ -1,18 +1,3 @@
-# SOLVE THESE QUESTIONS AND SPECIFY RUNNING TIME AND SPACE COMPLEXITY IN COMMENTS.
-
-# Question 1:
-
-# Given an array of integers and an integer target, return indices of the two numbers such that they add up to target.
-# You may assume that each input would have exactly one solution, and you may not use the same element twice.
-# Example: [2,3,4,2,7] target = 10, output = [1,4]
-
-def twoSum(nums, target):
-    # your code goes here
-    pass
-
-
-# Time and space complexity:
-
 # Question 2:
 # Given some arrays with strings on them, find the most common longest prefix among them.
 # Example: ["flower","flow","flight"] output = "fl"
@@ -67,3 +52,5 @@ def reverseList(head):
     pass
 
 # Time and space complexity:
+
+
