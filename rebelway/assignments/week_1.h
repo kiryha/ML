@@ -21,6 +21,31 @@ function int[] two_sum(int numbers[]; int target){
 int result[] = two_sum(numbers, target);
 printf('>> The indexes are: %s\n', result);
 
+// Three Sum. Time Complexity = O(n^2), Space Complexity = O(n)
+int numbers[] = {1, 2, -2, -1, 3};
+
+function int[] three_sum(int numbers[]) {
+
+    for (int i=0; i<len(numbers)-2; i++) {
+        dict map;
+        for (int j=i+1; j<len(numbers); j++) {
+            int sum = numbers[i] + numbers[j];
+            int target = -sum;
+
+            if (map[itoa(target)]) {
+                int value = map[itoa(target)];
+                int result[] = array(value, i, j);
+                return result;
+            }
+
+            map[itoa(numbers[j])] = j;
+        }
+    }
+}
+
+int result[] = three_sum(numbers);
+printf(">> The indices are: %s\n", result);
+
 
 // Longest Common Prefix. Time Complexity = O(max_str_length), Space Complexity = O(1)
 string names[] = array('floor', 'flower', 'flight');
