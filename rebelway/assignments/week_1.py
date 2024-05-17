@@ -1,14 +1,3 @@
-# Question 2:
-# Given some arrays with strings on them, find the most common longest prefix among them.
-# Example: ["flower","flow","flight"] output = "fl"
-
-def findMostCommonPrefix(arr):
-    # your code goes here
-    pass
-
-
-# Time and space complexity:
-
 # Question 3:
 # Given an array of integers, return the indices of three numbers that add up to 0.
 # example: [1, 2, -2, -1, 3] output = [0, 2, 3]
