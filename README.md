@@ -12,4 +12,7 @@ Install WSL: https://learn.microsoft.com/en-us/windows/wsl/install
 
 Run "Ubuntu" and set user_name@password = kiryha@enter
 
+Install Miniconda:
+https://docs.anaconda.com/free/miniconda/
+
 Neovim EDIE and tmux 

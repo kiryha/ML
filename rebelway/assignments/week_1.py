@@ -1,28 +1,27 @@
-# Question 3:
-# Given an array of integers, return the indices of three numbers that add up to 0.
-# example: [1, 2, -2, -1, 3] output = [0, 2, 3]
-
-def threeSum(nums):
-    # your code goes here
-    pass
-
-
-# Time and space complexity:
-
-# Question 4:
-# Given a singly linked list, reverse the nodes of the linked list
-# Example 1: [1, 2, 3] output = [3, 2, 1]
-
+# Reverse linked list. Time and space complexity: O(n), O(1)
 class Node:
     def __init__(self, data, next=None):
         self.data = data
         self.next = next
 
 
-def printList(head):
+def print_list(head):
+
     while head:
         print(head.data)
         head = head.next
+
+
+def reverse_list(head):
+
+    prev = None
+    current = head
+    while current:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+    return prev
 
 
 head = Node(1)
@@ -33,13 +32,5 @@ head.next = middle
 middle.next = tail
 tail.next = None
 
-printList(head)
-
-
-def reverseList(head):
-    # your code goes here
-    pass
-
-# Time and space complexity:
-
-
+reversed_head = reverse_list(head)
+print_list(reversed_head)
