@@ -15,4 +15,9 @@ Run "Ubuntu" and set user_name@password = kiryha@enter
 Install Miniconda:
 https://docs.anaconda.com/free/miniconda/
 
-Neovim EDIE and tmux 
+### Ubunta Miniconda Environments 
+
+``conda info --envs``
+
+`xd`
+
