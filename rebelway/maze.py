@@ -42,41 +42,64 @@ def is_valid_move(matrix, visited, row, column):
         return True
 
 
-def find_path(matrix, start, end):
+def dfs(matrix, visited, paths, directions, start_row, start_column, end_row, end_column):
 
-    # All possible directions we can go
-    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+    if (start_row, start_column) == (end_row, end_column):
+        paths.append((start_row, start_column))
+        return True
 
-    # Valid path to go from start to end
-    paths = []
+    if is_valid_move(matrix, visited, start_row, start_column):
+        visited[start_row][start_column] = True
+        paths.append((start_row, start_column))
 
-    # Visited nodes
-    visited = [[False for _ in range(len(matrix[0]))] for _ in range(len(matrix))]
+        for x, y in directions:
+            if dfs(matrix, visited, paths, directions, start_row + x, start_column + y, end_row, end_column):
+                return True
 
-    def dfs(row, column):
-
-        if (row, column) == end:
-            paths.append((row, column))
-            return True
-
-        if is_valid_move(matrix, visited, row, column):
-            visited[row][column] = True
-            paths.append((row, column))
-
-            for x, y in directions:
-                if dfs(row + x, column + y):
-                    return True
-
-            paths.pop()
+        paths.pop()
 
         return False
 
+
+def bfs(matrix, visited, paths, directions, start_row, start_column, end_row, end_column):
+
+    queue = [(start_row, start_column, [])]
+
+    while queue:
+        current_row, current_column, current_path = queue.pop(0)
+
+        if (current_row, current_column) == (end_row, end_column):
+            current_path.append((current_row, current_column))
+            paths.extend(current_path)
+            return True
+
+        if is_valid_move(matrix, visited, current_row, current_column):
+            visited[current_row][current_column] = True
+            current_path.append((current_row, current_column))
+
+            for x, y in directions:
+                next_row, next_column = current_row + x, current_column + y
+                queue.append((next_row, next_column, current_path.copy()))
+
+    return False
+
+
+def find_path(matrix):
+
+    start, end = find_start_and_end(maze)
+    directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # All possible directions we can go
+    paths = []  # Valid path to go from start to end
+    visited = [[False for _ in range(len(matrix[0]))] for _ in range(len(matrix))]  # Visited nodes base matrix
+
     start_row, start_column = start
-    dfs(start_row, start_column)
+    end_row, end_column = end
+
+    # Find path with BFS and DFS algorithms
+    dfs(matrix, visited, paths, directions, start_row, start_column, end_row, end_column)
+    # bfs(matrix, visited, paths, directions, start_row, start_column, end_row, end_column)
 
     return paths
 
 
-start, end = find_start_and_end(maze)
-solution_paths = find_path(maze, start, end)
+solution_paths = find_path(maze)
 print(solution_paths)
