@@ -17,7 +17,10 @@ https://docs.anaconda.com/free/miniconda/
 
 ### Ubunta Miniconda Environments 
 
-``conda info --envs``
+Get existing environments: `conda info --envs`  
+Create new environment: `conda create -n EnvironmentName python==3.10`
+Activate environment: `conda activate EnvironmentName`
 
-`xd`
-
+### Houdini Environment
+Edit houdini.env file, add (or update Eve launcher):
+`PYTHONPATH = "//wsl.localhost/Ubuntu/home/kiryha/miniconda3/envs/houdini/lib/python3.10/site-packages"`
