@@ -15,11 +15,16 @@ Run "Ubuntu" and set user_name@password = kiryha@enter
 Install Miniconda:
 https://docs.anaconda.com/free/miniconda/
 
-### Ubunta Miniconda Environments 
+### Ubuntu Miniconda Environments 
 
 Get existing environments: `conda info --envs`  
 Create new environment: `conda create -n EnvironmentName python==3.10`
 Activate environment: `conda activate EnvironmentName`
+
+### Jupyter Notebook
+From the "base" environment type "jupyter notebook" in Ubuntu, copy/paste URL to chrome, you will get your Notebook.
+
+``path = "/home/kiryha/rebelway_pandas.ipynb``
 
 ### Houdini Environment
 Edit houdini.env file, add (or update Eve launcher):
