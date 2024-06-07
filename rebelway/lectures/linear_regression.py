@@ -10,10 +10,12 @@ Weeek 4: Liner Regression
 
 
 def mean(values):
+
     return sum(values) / float(len(values))
 
 
 def covariance(x, mean_x, y, mean_y):
+
     covariance = 0
     for i in range(len(x)):
         covariance += (x[i] - mean_x) * (y[i] - mean_y)
@@ -22,10 +24,12 @@ def covariance(x, mean_x, y, mean_y):
 
 
 def variance(values, mean_value):
+
     return sum((x - mean_value) ** 2 for x in values)
 
 
 def coefitients(x, mean_x, y, mean_y):
+
     m = covariance(x, mean_x, y, mean_y) / variance(x, mean_x)
     b = mean_y - m * mean_x
 

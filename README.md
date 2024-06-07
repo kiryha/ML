@@ -29,3 +29,9 @@ From the "base" environment type "jupyter notebook" in Ubuntu, copy/paste URL to
 ### Houdini Environment
 Edit houdini.env file, add (or update Eve launcher):
 `PYTHONPATH = "//wsl.localhost/Ubuntu/home/kiryha/miniconda3/envs/houdini/lib/python3.10/site-packages"`
+
+### Google Collab
+Link: https://colab.research.google.com/
+
+Upload data to Google Drive, then access it from Collab:
+```file_path = '/content/drive/MyDrive/PROJECTS/rebelway_ml/titanic.csv'```
