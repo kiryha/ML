@@ -6,7 +6,8 @@ import pickle
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report
 
 # Read torus and sphere data and combine into one data set
 torus_path = '/content/drive/MyDrive/PROJECTS/rebelway_ml/torus.csv'
@@ -30,17 +31,26 @@ df['torus'] = df['object_type'].apply(lambda x: True if x == 'torus' else False)
 df.drop(['object_type'], axis=1, inplace=True)
 
 # Define features and split data into train/test sets
-# x = df.drop('torus', axis=1)  # Features without target variable (predictors)
-# y =  df['torus']  # target variable
+x = df.drop('torus', axis=1)  # Features without target variable (predictors)
+y = df['torus']  # target variable
 
-features = ['object_index', 'rows', 'columns', 'position_x', 'position_y', 'position_z']
-x = df[features]
-y = df['torus']
+# features = ['object_index', 'rows', 'columns', 'position_x', 'position_y', 'position_z']
+# x = df[features]
+# y = df['torus']
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=101)
+
+# Standardize features
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
 
 # Train model
 logmodel = LogisticRegression(max_iter=600000)
 logmodel.fit(x_train, y_train)
+
+# Evaluate model
+y_pred = logmodel.predict(x_test)
+print(classification_report(y_test, y_pred))
 
 # Save model
 model_path = '/content/drive/MyDrive/PROJECTS/rebelway_ml/torus_sphere_model.sav'
