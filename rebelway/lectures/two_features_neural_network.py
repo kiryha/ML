@@ -1,5 +1,5 @@
 import numpy as np
-
+import pandas as pd
 
 def loss_function(w1, w2, b, train_data):
 
@@ -26,18 +26,22 @@ def sigmoid(x):
 def train(train_data):
 
     # np.random.seed(0)
-    w1 = np.random.uniform(0, 1, 1)  # Weight
-    w2 = np.random.uniform(0, 1, 1)  # Weight
-    b = np.random.uniform(0, 1, 1)
 
     epochs = 5000
     epsilon = 0.01
     learning_rate = 0.1
+    loss_values = []
+
+    w1 = np.random.uniform(0, 1, 1)  # Weight
+    w2 = np.random.uniform(0, 1, 1)  # Weight
+    b = np.random.uniform(0, 1, 1)  # Bias
 
     print('Init Loss: ', loss_function(w1, w2, b, train_data))
 
     for i in range(epochs):
+
         c = loss_function(w1, w2, b, train_data)
+        loss_values.append(c)
         # print(f'w1: {w1} w2: {w2} loss: {c}')
 
         dw1 = (loss_function(w1 + epsilon, w2, b, train_data) - c) / epsilon
@@ -57,6 +61,8 @@ def train(train_data):
         for j in range(2):
             print(f'i {i} | j {sigmoid(i*w1 + j*w2 + b)} ')
 
+    return loss_values
+
 
 if __name__ == "__main__":
 
@@ -67,4 +73,6 @@ if __name__ == "__main__":
                   [0, 1, 1],
                   [1, 1, 1]]
 
-    train(train_data)
+    loss_values = train(train_data)
+    dataframe = pd.DataFrame(loss_values)
+    dataframe.to_csv('two_features_lost_values.csv', index=False)
