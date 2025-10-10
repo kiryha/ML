@@ -35,3 +35,6 @@ Link: https://colab.research.google.com/
 
 Upload data to Google Drive, then access it from Collab:
 ```file_path = '/content/drive/MyDrive/PROJECTS/rebelway_ml/titanic.csv'```
+
+# ML in Houdini
+### Linear Regression
