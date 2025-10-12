@@ -1,3 +1,19 @@
+"""
+What were modeling:
+You remesh shapes with a fixed edge length (e.g., 0.2).
+After remeshing, the surface has a roughly constant triangle density.
+So: triangle count grows linearly with surface area.
+
+Mathematically:
+y ≈ k · X
+
+X = surface area (m²)
+y = triangle count
+k = triangles per square meter at your chosen edge length.
+
+Use-case: given any mesh area, you can predict a triangle budget before reducing or meshing—handy for keeping assets within a poly budget automatically.
+"""
+
 import json, joblib
 import numpy as np
 import pandas as pd
@@ -104,7 +120,7 @@ def train_model(d):
     return model
 
 
-def eval_on(df, tag):
+def eval_on(df, tag, model):
     """
     Compute metrics comparing truth "y" vs prediction "yhat"
 
@@ -122,6 +138,8 @@ def eval_on(df, tag):
 
     X = df[["X_area"]].to_numpy()
     y = df["y_total_prims"].to_numpy()
+
+    k = float(model.coef_[0])   # triangles per m²
     yhat = model.predict(X)
     r2  = r2_score(y, yhat)
     mae = mean_absolute_error(y, yhat)
@@ -132,7 +150,7 @@ def eval_on(df, tag):
 
 
 # Visualize data
-# plot_scatter_triarea(df["X_area"], df["y_total_prims"], "X_area", "y_total_prims", "Total Primitives vs Area",hue=df["iteration"])
+plot_scatter_triarea(df["X_area"], df["y_total_prims"], "X_area", "y_total_prims", "Total Primitives vs Area",hue=df["iteration"])
 
 
 # Split dataset: 80/10/10 
@@ -144,11 +162,10 @@ df_train, df_validation, df_test = df[m_train], df[m_val], df[m_test]
 
 # Train
 model = train_model(df_train)
-k = float(model.coef_[0])   # triangles per m²
 
-r2_tr, mae_tr, mape_tr, _ = eval_on(df_train, "train")
-r2_va, mae_va, mape_va, _ = eval_on(df_validation, "val")
-r2_te, mae_te, mape_te, yhat_te = eval_on(df_test, "test")
+r2_tr, mae_tr, mape_tr, _ = eval_on(df_train, "train", model)
+r2_va, mae_va, mape_va, _ = eval_on(df_validation, "val", model)
+r2_te, mae_te, mape_te, yhat_te = eval_on(df_test, "test", model)
 
 # Save model
 joblib.dump(model, f"{root_data}/triangles_per_area.joblib")
