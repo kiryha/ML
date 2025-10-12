@@ -3,9 +3,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error
 from pathlib import Path
 
-CSV = Path("C:/Users/kko8/OneDrive/projects/houdini_snippets/prod/3d/scenes/ML/Lab_1/data/triarea.csv")
+
+root_data = "C:/Users/kko8/OneDrive/projects/houdini_snippets/prod/3d/scenes/ML/Lab_1/data"
+CSV = Path(f"{root_data}/triangles_per_area.csv")
 
 
 # 1) Load
@@ -51,38 +54,7 @@ def plot_scatter(x, y, x_label, y_label, title):
     plt.show()
 
 
-def scatter_with_fitted_line():
-    """
-    What it shows: linear relation and any obvious outliers.
-    """
-
-    x = df["X_volume"].to_numpy(); y = df["y_mass"].to_numpy()
-
-    rho = float(np.dot(x,y) / np.dot(x,x))  # slope through origin
-    xx = np.linspace(x.min(), x.max(), 100)
-
-    plt.figure(); plt.scatter(x, y); plt.plot(xx, rho*xx)
-    plt.xlabel("Volume (m³)"); plt.ylabel("Mass (kg)"); plt.title("Mass vs Volume")
-    plt.tight_layout(); plt.show()
-
-
-def Histogram_of_log10():
-    """
-    What it shows: if most values are “near zero” or just right-skewed. A log histogram spreads them out.
-    """
-
-    x = df["X_volume"].to_numpy()
-    plt.figure()
-    plt.hist(np.log10(x[x > 0]), bins=30)
-    plt.xlabel("log10(Volume m³)")
-    plt.ylabel("Count")
-    plt.title("Distribution on log scale")
-    plt.tight_layout()
-    plt.show()
-
-
-def plot_scatter2(x, y, x_label, y_label, title,
-                 hue=None, size=None, logx=False, logy=False, bins=20):
+def plot_scatter_triarea(x, y, x_label, y_label, title, hue=None, size=None, logx=False, logy=False, bins=20):
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
     # --- scatter ---
@@ -93,7 +65,7 @@ def plot_scatter2(x, y, x_label, y_label, title,
         h = np.asarray(hue)
         sc = axes[0].scatter(x, y, c=h)
         cb = fig.colorbar(sc, ax=axes[0])
-        cb.set_label("hue")
+        cb.set_label("iteration")
 
     if size is not None:
         axes[0].collections[-1].set_sizes(np.asarray(size))
@@ -115,8 +87,68 @@ def plot_scatter2(x, y, x_label, y_label, title,
     plt.tight_layout(); plt.show()
 
 
-# plot_scatter(df["X_volume"], df["y_mass"], "Volume (X_volume)", "Mass (y_mass)", "Mass vs Volume")
-print_df_info(df)
-# scatter_with_fitted_line()
-# Histogram_of_log10()
-# plot_scatter2(df["X_area"], df["y_total_prims"], "X_area", "y_total_prims", "Total Primitives vs Area",hue=df["iteration"])
+# Iteration 2
+# Goal: predict a PolyReduce “Target Triangle Count” from the current area.
+def train_model(d):
+    """
+    Train the Linear Regression model.
+    If we have 0 triangles, then we will have 0 area, hence we will have 0 slope and graph will pass through origin,
+    so we need to fit_intercept=False
+    """
+
+    X = d[["X_area"]].to_numpy()
+    y = d["y_total_prims"].to_numpy()
+    model = LinearRegression(fit_intercept=False)
+    model.fit(X, y)
+
+    return model
+
+
+def eval_on(df, tag):
+    """
+    Compute metrics comparing truth "y" vs prediction "yhat"
+
+    k=58.7147 R2=0.9965 MAE=675.63 MAPE=4.59%
+
+    R2: R-squared score, measures how much of the variation in y the model explains 
+    Range ~[0,1] (higher is better). 1.0 is a perfect line.
+
+    MAE (mean absolute error): average absolute difference |y − yhat|, in triangles. Easy to read in real units.
+    On average, predictions are off by ~676 triangles. Whether that’s “big” depends on typical counts
+
+    MAPE (mean absolute percentage error): average percentage error |y − yhat| / y, in %.
+    Average relative error ~4.6%. This is small—good realism with the noise you injected.
+    """
+
+    X = df[["X_area"]].to_numpy()
+    y = df["y_total_prims"].to_numpy()
+    yhat = model.predict(X)
+    r2  = r2_score(y, yhat)
+    mae = mean_absolute_error(y, yhat)
+    mape = float(np.mean(np.abs((y - yhat)/np.maximum(1e-9, y)))*100.0)
+    print(f"[{tag}] k={k:.4f}  R2={r2:.4f}  MAE={mae:.2f}  MAPE={mape:.2f}%  n={len(df)}")\
+
+    return r2, mae, mape, yhat
+
+
+# Visualize data
+# plot_scatter_triarea(df["X_area"], df["y_total_prims"], "X_area", "y_total_prims", "Total Primitives vs Area",hue=df["iteration"])
+
+
+# Split dataset: 80/10/10 
+iters = df["iteration"].astype(int).to_numpy()
+m_train = (iters % 10) < 8
+m_val   = (iters % 10) == 8
+m_test  = (iters % 10) == 9
+df_train, df_validation, df_test = df[m_train], df[m_val], df[m_test]
+
+# Train
+model = train_model(df_train)
+k = float(model.coef_[0])   # triangles per m²
+
+r2_tr, mae_tr, mape_tr, _ = eval_on(df_train, "train")
+r2_va, mae_va, mape_va, _ = eval_on(df_validation, "val")
+r2_te, mae_te, mape_te, yhat_te = eval_on(df_test, "test")
+
+# Save model
+joblib.dump(model, f"{root_data}/triangles_per_area.joblib")
