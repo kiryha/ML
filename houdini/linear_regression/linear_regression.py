@@ -102,15 +102,15 @@ def train():
     r2_te, mae_te, mape_te, yhat_te = eval_on(df_test, "test", model)
 
     # Save model
-    joblib.dump(model, f"{root_data}/triangles_from_area_volume.joblib")
+    joblib.dump(model, f"{root_data}/triangle_density.joblib")
 
 
 # Visualize (unchanged example view; area vs tris)
-plot_scatter_triarea(
-    df["X_area"], df["y_total_prims"],
-    "X_area", "y_total_prims",
-    "Total Primitives vs Area",
-    hue=df["X_volume"]
-)
+# plot_scatter_triarea(
+#     df["X_area"], df["y_total_prims"],
+#     "X_area", "y_total_prims",
+#     "Total Primitives vs Area",
+#     hue=df["X_volume"]
+# )
 
-# train()
+train()
