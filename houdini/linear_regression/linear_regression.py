@@ -24,6 +24,7 @@ df = pd.read_csv(CSV)
 
 
 def plot_scatter_triarea(x, y, x_label, y_label, title, hue=None, size=None, logx=False, logy=False, bins=20):
+    
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
     # --- scatter ---
@@ -105,12 +106,23 @@ def train():
     joblib.dump(model, f"{root_data}/triangle_density.joblib")
 
 
-# Visualize (unchanged example view; area vs tris)
-# plot_scatter_triarea(
-#     df["X_area"], df["y_total_prims"],
-#     "X_area", "y_total_prims",
-#     "Total Primitives vs Area",
-#     hue=df["X_volume"]
-# )
+if __name__ == "__main__":
 
-train()
+    # Count, mean, min, max, ...
+    print(df.describe())
+
+    # Correlation Matrix
+    correlation_matrix = df.corr(numeric_only=True, method="pearson")
+    print(correlation_matrix.round(3))
+
+    # # Heatmap of Correlation Matrix
+    # plt.imshow(correlation_matrix, interpolation="nearest")
+    # plt.colorbar()
+    # plt.tight_layout()
+    # plt.show()
+
+
+    # Visualize (unchanged example view; area vs tris)
+    # plot_scatter_triarea(df["X_area"], df["y_total_prims"], "X_area", "y_total_prims", "Total Primitives vs Area", hue=df["X_volume"])
+
+    # train()
